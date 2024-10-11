@@ -180,7 +180,36 @@ const ProductController = {
                 })
             }
         }
+    },
+
+    async getProductByName(req, res) {
+        console.log("name is : ", req.params.name);
+        const productName = req.params.name; // Get the product name from the request parameters
+
+        try {
+            const products = await Product.find({ title: productName });
+            console.log("product", products)
+            if (products.length > 0) {
+                res.status(200).json({
+                    type: "success",
+                    message: "Products retrieved successfully",
+                    data: products
+                });
+            } else {
+                res.status(404).json({
+                    type: "error",
+                    message: "No products found with the given name"
+                });
+            }
+        } catch (err) {
+            res.status(500).json({
+                type: "error",
+                message: "Something went wrong, please try again",
+                err
+            });
+        }
     }
+
 };
 
 module.exports = ProductController;
