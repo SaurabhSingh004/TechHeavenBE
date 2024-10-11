@@ -6,7 +6,7 @@ const { isAdminVerifier } = require('../middlewares/verifyToken');
 
 router.get('/', ProductController.get_products);
 router.get('/:id', ProductController.get_product);
-router.get('/name/:name', ProductController.getProductByName);
+// router.get('/name/:name', ProductController.getProductByName);
 router.get('/:id/get_related_products', ProductController.getRelatedProducts);
 router.post('/', isAdminVerifier, ProductController.create_product);
 router.put('/:id', isAdminVerifier, ProductController.update_product);

@@ -6,7 +6,9 @@ const ProductController = {
     /* get all products */
    async get_products(req, res) {
     const qCategory = req.query.category;
-    console.log(qCategory);
+    const keyword = req.query.keyword === undefined ? "" : req.query.keyword;
+
+
     // Get page and limit from query or set default values
     const page = parseInt(req.query.page) || 1;  // Default to page 1 if not provided
     const limit = parseInt(req.query.limit) || 10;  // Default to 10 products per page if not provided
@@ -27,12 +29,13 @@ const ProductController = {
         else if (qCategory) {
             console.log("qCategory");
             products = await Product.find({
-                category: qCategory  // Simple string match
+                category: qCategory,
+                title: { $regex: keyword, $options: 'i' }// Simple string match
             })
             .skip((page - 1) * limit)
             .limit(limit);
             totalProducts = await Product.countDocuments(
-                qCategory ? { category: qCategory } : {}
+                qCategory ? { category: qCategory, title: { $regex: keyword, $options: 'i' }} : {}
             );
         }
 
@@ -182,33 +185,48 @@ const ProductController = {
         }
     },
 
-    async getProductByName(req, res) {
-        console.log("name is : ", req.params.name);
-        const productName = req.params.name; // Get the product name from the request parameters
-
-        try {
-            const products = await Product.find({ title: productName });
-            console.log("product", products)
-            if (products.length > 0) {
-                res.status(200).json({
-                    type: "success",
-                    message: "Products retrieved successfully",
-                    data: products
-                });
-            } else {
-                res.status(404).json({
-                    type: "error",
-                    message: "No products found with the given name"
-                });
-            }
-        } catch (err) {
-            res.status(500).json({
-                type: "error",
-                message: "Something went wrong, please try again",
-                err
-            });
-        }
-    }
+    // async getProductByName(req, res) {
+    //     const page = parseInt(req.query.page) || 1;  // Default to page 1 if not provided
+    //     const limit = parseInt(req.query.limit) || 10;  // Default to 10 products per page if not provided
+    //
+    //     const qCategory = req.query.category;
+    //
+    //     const productName = req.params.name; // Get the product name from the request parameters
+    //
+    //     try {
+    //
+    //         products = await Product.find({
+    //             category: qCategory,
+    //             title: { $regex: productName, $options: 'i' }// Simple string match
+    //         })
+    //             .skip((page - 1) * limit)
+    //             .limit(limit);
+    //         totalProducts = await Product.countDocuments(
+    //             qCategory ? { category: qCategory } : {}
+    //         );
+    //         // const products = await Product.find({ title: { $regex: productName, $options: 'i' } });
+    //         console.log("product", products)
+    //         if (products.length > 0) {
+    //             res.status(200).json({
+    //                 type: "success",
+    //                 message: "Products retrieved successfully",
+    //                 data: products
+    //             });
+    //         } else {
+    //             res.status(200).json({
+    //                 type: "error",
+    //                 message: "No products found with the given name",
+    //                 data: []
+    //             });
+    //         }
+    //     } catch (err) {
+    //         res.status(500).json({
+    //             type: "error",
+    //             message: "Something went wrong, please try again",
+    //             err
+    //         });
+    //     }
+    // }
 
 };
 
