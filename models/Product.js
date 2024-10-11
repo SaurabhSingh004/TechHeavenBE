@@ -36,6 +36,10 @@ const ProductSchema = new mongoose.Schema({
     discount:{
         type:Number,
         required:false
+    },
+    brand:{
+        type:String,
+        required:true
     }
 },
     { timestamps: true }
