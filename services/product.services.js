@@ -16,7 +16,7 @@ const getRelatedProducts = async (currentProduct) => {
             category: currentProduct.category, // Match same category
             brand: currentProduct.brand,       // Match same brand
             price: priceRange                  // Match price range
-        }).limit(5);
+        }).sort({ priceDifference: 1 }).limit(5);
 
         console.log("Products with same category, brand, and within price range:", relatedProducts);
 
