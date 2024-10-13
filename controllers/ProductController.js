@@ -89,7 +89,7 @@ const ProductController = {
     /* get single product */
     async get_product(req, res) {
         try {
-            console.log("This endpoint is hit");
+            console.log("This endpoint is hit here");
             const product = await Product.findById(req.params.id);
             if(!product) {
                 res.status(404).json({
@@ -184,6 +184,48 @@ const ProductController = {
             }
         }
     },
+
+    async get_big_discount_products(req, res) {
+        console.log("bigdiscount api");
+        try {
+            // Fetch products sorted by discount in descending order
+            const products = await Product.find({ discount: { $exists: true } })
+            .sort({ discount: -1 })  // Sort by discount in descending order
+            .limit(3);  // Optionally limit the number of results (remove this if not needed)
+    
+            res.status(200).json({
+                type: "success",
+                products: products  // The actual products returned
+            });
+        } catch (err) {
+            res.status(500).json({
+                type: "error",
+                message: "Something went wrong please try again",
+                err
+            });
+        }
+    },
+
+    async get_new_arrivals_products(req, res) {
+        console.log("newarrival endpoint");
+        try {
+            // Fetch products sorted by creation date in descending order (latest first)
+            const products = await Product.find()
+            .sort({ createdAt: -1 })  // Sort by createdAt in descending order
+            .limit(3);  // Optionally limit the number of results (remove this if not needed)
+
+            res.status(200).json({
+                type: "success",
+                products: products  // The actual products returned
+            });
+        } catch (err) {
+            res.status(500).json({
+                type: "error",
+                message: "Something went wrong please try again",
+                err
+            });
+        }
+    }
 
     // async getProductByName(req, res) {
     //     const page = parseInt(req.query.page) || 1;  // Default to page 1 if not provided
